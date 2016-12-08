@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.massivecraft.massivecore.Hostility;
+import com.massivecraft.massivecore.event.EventMassiveCoreEntityHostility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -978,6 +980,18 @@ public class EngineMain extends Engine
 			// Other
 			return true;
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void makeSureAnimalsDontKillYou(EventMassiveCoreEntityHostility event) {
+		Location loc = event.getEntitySpawnEvent().getLocation();
+		PS ps = PS.valueOf(loc);
+		Faction faction = BoardColl.get().getFactionAt(ps);
+		
+		// If monsters are allowed by flag, we don't care about hostility anyway
+		if (faction.getFlag(MFlag.getFlagMonsters())) return;
+		
+		if (event.getHostility() == Hostility.HOSTILE) event.setCancelled(true);
 	}
 	
 	// -------------------------------------------- //
