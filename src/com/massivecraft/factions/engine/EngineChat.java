@@ -36,102 +36,127 @@ public class EngineChat extends Engine
 	@Override
 	public void setActiveInner(boolean active)
 	{
-		if ( ! active) return;
+		if (!active) return;
 		
+		// If chat formatting is enabled in the MConf ...
 		if (MConf.get().chatSetFormat)
 		{
-			Bukkit.getPluginManager().registerEvent(AsyncPlayerChatEvent.class, this, MConf.get().chatSetFormatAt, new SetFormatEventExecutor(), Factions.get(), true);
+			Bukkit.getPluginManager().registerEvent(
+				AsyncPlayerChatEvent.class,
+				this,
+				MConf.get().chatSetFormatAt,
+				new EventExecutor()
+				{
+					@Override
+					public void execute(Listener listener, Event event) throws EventException
+					{
+						try
+						{
+							if (!(event instanceof AsyncPlayerChatEvent)) return;
+							((AsyncPlayerChatEvent) event).setFormat(MConf.get().chatSetFormatTo);
+						}
+						catch (Throwable t)
+						{
+							throw new EventException(t);
+						}
+					}
+				},
+				Factions.get(),
+				true
+			);
 		}
 		
+		// If chat tag parsing is enabled in the MConf ...
 		if (MConf.get().chatParseTags)
 		{
-			Bukkit.getPluginManager().registerEvent(AsyncPlayerChatEvent.class, this, MConf.get().chatParseTagsAt, new ParseTagsEventExecutor(), Factions.get(), true);
-		}
-		
-		if (MConf.get().chatParseTags)
-		{
-			Bukkit.getPluginManager().registerEvent(EventMassiveCorePlayerToRecipientChat.class, this, EventPriority.NORMAL, new ParseRelcolorEventExecutor(), Factions.get(), true);
+			Bukkit.getPluginManager().registerEvent(
+				AsyncPlayerChatEvent.class,
+				this,
+				MConf.get().chatParseTagsAt,
+				new EventExecutor()
+				{
+					@Override
+					public void execute(Listener listener, Event event) throws EventException
+					{
+						try
+						{
+							// If this is an AsyncPlayerChatEvent
+							if (!(event instanceof AsyncPlayerChatEvent)) return;
+							AsyncPlayerChatEvent casted = (AsyncPlayerChatEvent) event;
+							
+							// And the chatter is actually a player
+							Player player = casted.getPlayer();
+							if (MUtil.isntPlayer(player)) return;
+							
+							// Format the chat
+							String format = casted.getFormat();
+							format = ChatFormatter.format(format, player, null);
+							casted.setFormat(format);
+						}
+						catch (Throwable t)
+						{
+							throw new EventException(t);
+						}
+					}
+				},
+				Factions.get(),
+				true
+			);
+			
+			Bukkit.getPluginManager().registerEvent(
+				EventMassiveCorePlayerToRecipientChat.class,
+				this,
+				EventPriority.NORMAL,
+				new EventExecutor()
+				{
+					@Override
+					public void execute(Listener listener, Event event) throws EventException
+					{
+						try
+						{
+							// If this is an EventMassiveCorePlayerToRecipientChat ...
+							if (!(event instanceof EventMassiveCorePlayerToRecipientChat)) return;
+							EventMassiveCorePlayerToRecipientChat casted = (EventMassiveCorePlayerToRecipientChat) event;
+							
+							// Format the message
+							String format = casted.getFormat();
+							format = ChatFormatter.format(format, casted.getSender(), casted.getRecipient());
+							casted.setFormat(format);
+						}
+						catch (Throwable t)
+						{
+							throw new EventException(t);
+						}
+					}
+				},
+				Factions.get(),
+				true
+			);
 		}
 	}
 	
 	// -------------------------------------------- //
-	// SET FORMAT
+	// UTIL
 	// -------------------------------------------- //
 	
-	private class SetFormatEventExecutor implements EventExecutor
-	{
-		@Override
-		public void execute(Listener listener, Event event) throws EventException
-		{
-			try
-			{
-				if (!(event instanceof AsyncPlayerChatEvent)) return;
-				setFormat((AsyncPlayerChatEvent)event);
-			}
-			catch (Throwable t)
-			{
-				throw new EventException(t);
-			}
-		}
-	}
-	
+	@Deprecated
 	public static void setFormat(AsyncPlayerChatEvent event)
-	{	
+	{
 		event.setFormat(MConf.get().chatSetFormatTo);
 	}
 	
-	// -------------------------------------------- //
-	// PARSE TAGS
-	// -------------------------------------------- //
-
-	private class ParseTagsEventExecutor implements EventExecutor
+	@Deprecated
+	public static void parseTags(AsyncPlayerChatEvent casted)
 	{
-		@Override
-		public void execute(Listener listener, Event event) throws EventException
-		{
-			try
-			{
-				if (!(event instanceof AsyncPlayerChatEvent)) return;
-				parseTags((AsyncPlayerChatEvent)event);
-			}
-			catch (Throwable t)
-			{
-				throw new EventException(t);
-			}
-		}
-	}
-
-	public static void parseTags(AsyncPlayerChatEvent event)
-	{
-		Player player = event.getPlayer();
+		Player player = casted.getPlayer();
 		if (MUtil.isntPlayer(player)) return;
 		
-		String format = event.getFormat();
+		String format = casted.getFormat();
 		format = ChatFormatter.format(format, player, null);
-		event.setFormat(format);
+		casted.setFormat(format);
 	}
 	
-	// -------------------------------------------- //
-	// PARSE RELCOLOR
-	// -------------------------------------------- //
-	
-	private class ParseRelcolorEventExecutor implements EventExecutor
-	{
-		@Override
-		public void execute(Listener listener, Event event) throws EventException
-		{
-			try
-			{
-				if (!(event instanceof EventMassiveCorePlayerToRecipientChat)) return;
-				parseRelcolor((EventMassiveCorePlayerToRecipientChat)event);
-			}
-			catch (Throwable t)
-			{
-				throw new EventException(t);
-			}
-		}
-	}
-
+	@Deprecated
 	public static void parseRelcolor(EventMassiveCorePlayerToRecipientChat event)
 	{
 		String format = event.getFormat();
