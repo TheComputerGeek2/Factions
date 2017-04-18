@@ -15,6 +15,7 @@ permissions:
   factions.access.player: {description: grant player access, with the proper fperm, default: false}
   factions.access.view: {description: view access, default: false}
   factions.override: {description: enable override mode, default: false}
+  factions.override.notification: {description: enable override notifications on login, default: false}
   factions.basecommand: {description: use factions base command, default: false}
   factions.claim: {description: claim faction territory, default: false}
   factions.claim.one: {description: claim a single chunk, default: false}
@@ -101,6 +102,7 @@ permissions:
       factions.access.player: true
       factions.access.view: true
       factions.override: true
+      factions.override.notification: true
       factions.basecommand: true
       factions.claim: true
       factions.claim.one: true
@@ -208,6 +210,7 @@ permissions:
     children:
       factions.kit.rank0: true
       factions.override: true
+      factions.override.notification: true
       factions.invite.list.other: true
   factions.kit.rank0:
     default: false

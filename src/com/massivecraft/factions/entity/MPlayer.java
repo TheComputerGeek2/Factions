@@ -66,6 +66,7 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 		this.setPower(that.power);
 		this.setMapAutoUpdating(that.mapAutoUpdating);
 		this.setOverriding(that.overriding);
+		this.setOverrideNotificationsEnabled(that.notificationOverriding);
 		this.setTerritoryInfoTitles(that.territoryInfoTitles);
 
 		return this;
@@ -86,6 +87,7 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 		if (this.getPowerRounded() != (int) Math.round(MConf.get().defaultPlayerPower)) return false;
 		// if (this.isMapAutoUpdating()) return false; // Just having an auto updating map is not in itself reason enough for database storage.
 		if (this.isOverriding()) return false;
+		if (this.areOverrideNotificationsEnabled()) return false;
 		if (this.isTerritoryInfoTitles() != MConf.get().territoryInfoTitlesDefault) return false;
 
 		return true;
@@ -162,6 +164,10 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 	// Null means false
 	@SerializedName(value = "usingAdminMode")
 	private Boolean overriding = null;
+	
+	// If this player is overriding, should they be notified upon login?
+	// Null means false
+	private Boolean notificationOverriding = null;
 
 	// Does this player use titles for territory info?
 	// Null means default specified in MConf.
@@ -532,7 +538,7 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 	public boolean isOverriding()
 	{
 		if (this.overriding == null) return false;
-		if (this.overriding == false) return false;
+		if (!this.overriding) return false;
 
 		if (!this.hasPermission(Perm.OVERRIDE, true))
 		{
@@ -558,7 +564,41 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 		// Mark as changed
 		this.changed();
 	}
-
+	
+	// -------------------------------------------- //
+	// FIELD: notificationOverriding
+	// -------------------------------------------- //
+	
+	public boolean areOverrideNotificationsEnabled()
+	{
+		if (this.notificationOverriding == null) return false;
+		if (!this.notificationOverriding) return false;
+		
+		if (!this.hasPermission(Perm.OVERRIDE_NOTIFICATION, true))
+		{
+			this.setOverrideNotificationsEnabled(false);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public void setOverrideNotificationsEnabled(Boolean enabled)
+	{
+		// Clean input
+		Boolean target = enabled;
+		if (MUtil.equals(target, false)) target = null;
+		
+		// Detect Nochange
+		if (MUtil.equals(this.notificationOverriding, target)) return;
+		
+		// Apply
+		this.notificationOverriding = target;
+		
+		// Mark as changed
+		this.changed();
+	}
+	
 	// -------------------------------------------- //
 	// FIELD: territoryInfoTitles
 	// -------------------------------------------- //

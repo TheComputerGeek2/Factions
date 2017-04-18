@@ -65,6 +65,7 @@ public class CmdFactions extends FactionsCommand
 	public CmdFactionsXPlaceholder cmdFactionsTax = new CmdFactionsXPlaceholder("FactionsTax", "tax");
 	public CmdFactionsXPlaceholder cmdFactionsDynmap = new CmdFactionsXPlaceholder("FactionsDynmap", "dynmap");
 	public CmdFactionsOverride cmdFactionsOverride = new CmdFactionsOverride();
+	public CmdFactionsOverrideNotification cmdFactionsOverrideNotification = new CmdFactionsOverrideNotification();
 	public CmdFactionsDisband cmdFactionsDisband = new CmdFactionsDisband();
 	public CmdFactionsPowerBoost cmdFactionsPowerBoost = new CmdFactionsPowerBoost();
 	public CmdFactionsSetpower cmdFactionsSetpower = new CmdFactionsSetpower();
@@ -122,6 +123,7 @@ public class CmdFactions extends FactionsCommand
 		this.addChild(this.cmdFactionsTax);
 		this.addChild(this.cmdFactionsDynmap);
 		this.addChild(this.cmdFactionsOverride);
+		this.addChild(this.cmdFactionsOverrideNotification);
 		this.addChild(this.cmdFactionsDisband);
 		this.addChild(this.cmdFactionsPowerBoost);
 		this.addChild(this.cmdFactionsSetpower);
