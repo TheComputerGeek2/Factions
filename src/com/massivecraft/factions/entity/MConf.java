@@ -402,6 +402,10 @@ public class MConf extends Entity<MConf>
 	// The distance for denying the following commands. Set to -1 to disable.
 	public double denyCommandsDistance = -1;
 	
+	// Which worlds should we block commands in based upon the proximity set above to members of specific relations.
+	// Defaults to all worlds.
+	public WorldExceptionSet denyCommandsDistanceWorlds = new WorldExceptionSet();
+	
 	// Lists of commands to deny depending on your relation to a nearby enemy in the above distance.
 	public Map<Rel, List<String>> denyCommandsDistanceRelation = MUtil.map(
 		Rel.ENEMY, MUtil.list(

@@ -66,7 +66,7 @@ public class EngineDenyCommands extends Engine
 		}
 		
 		// ... there maybe be a player in the distance that denies the command ...
-		if (MConf.get().denyCommandsDistance > -1 && ! MConf.get().denyCommandsDistanceBypassIn.contains(factionAtRel))
+		if (MConf.get().denyCommandsDistance > -1 && MConf.get().denyCommandsDistanceWorlds.contains(ps) && !MConf.get().denyCommandsDistanceBypassIn.contains(factionAtRel))
 		{	
 			for (Player otherplayer : player.getWorld().getPlayers())
 			{
