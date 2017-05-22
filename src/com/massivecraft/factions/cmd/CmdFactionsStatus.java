@@ -4,7 +4,6 @@ import com.massivecraft.factions.comparator.ComparatorMPlayerInactivity;
 import com.massivecraft.factions.cmd.type.TypeFaction;
 import com.massivecraft.factions.cmd.type.TypeSortMPlayer;
 import com.massivecraft.factions.entity.Faction;
-import com.massivecraft.factions.entity.MPerm;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.Parameter;
@@ -45,9 +44,6 @@ public class CmdFactionsStatus extends FactionsCommand
 		Faction faction = this.readArg(msenderFaction);
 		Comparator<MPlayer> sortedBy = this.readArg(ComparatorMPlayerInactivity.get());
 
-		// MPerm
-		if ( ! MPerm.getPermStatus().has(msender, faction, true)) return;
-		
 		// Sort list
 		final List<MPlayer> mplayers = faction.getMPlayers();
 		Collections.sort(mplayers, sortedBy);

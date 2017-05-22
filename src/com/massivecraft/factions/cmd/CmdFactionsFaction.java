@@ -56,7 +56,7 @@ public class CmdFactionsFaction extends FactionsCommand
 				TreeSet<PriorityLines> priorityLiness = new TreeSet<>(event.getIdPriorityLiness().values());
 				for (PriorityLines priorityLines : priorityLiness)
 				{
-					MixinMessage.get().messageOne(sender, priorityLines.getLines());
+					MixinMessage.get().messageOne(sender, priorityLines.getLinesMson());
 				}
 			}
 		});
